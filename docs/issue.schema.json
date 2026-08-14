@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://code-collection-nagareyama.github.io/awesome-nagareyama-issues/schema/issue.schema.json",
+  "title": "Nagareyama Issue Card",
+  "description": "流山市のオープンデータと市議会の議論から、社会課題と活用アイデアを1枚に整理するためのテンプレート。全カードがこの構造を共有する。",
+  "type": "object",
+  "required": ["id", "slug", "title", "catch", "theme", "persona", "pain", "scene", "stories", "evidence", "solution", "kpi", "feasibility"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^N-[0-9]{2}$",
+      "description": "通し番号。N-01 から。"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "URL に使う識別子。docs/issues/<slug>.html になる。"
+    },
+    "title": {
+      "type": "string",
+      "description": "誰の、どの場面の困りごとかが分かる見出し。制度名ではなく生活の言葉で書く。"
+    },
+    "catch": {
+      "type": "string",
+      "description": "1〜2文の要約。必ず data に裏づけのある数字をひとつ含める。"
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["移動・交通", "暮らし・商業", "安全・道路", "防災", "防災 × 福祉", "子育て", "施設・行政", "財政", "健康・救急", "環境"],
+      "description": "分類。配色とフィルタに使う。"
+    },
+    "persona": {
+      "type": "object",
+      "required": ["label", "situation"],
+      "properties": {
+        "label": { "type": "string", "description": "例: 78歳・北部在住・昨年運転免許を返納" },
+        "situation": { "type": "string", "description": "その人が置かれている状況を2〜3文で。" },
+        "icon": { "type": "string", "description": "シーン図で使うアイコン ID。" }
+      }
+    },
+    "pain": {
+      "type": "object",
+      "required": ["when", "where", "what", "now"],
+      "description": "困りごとを「いつ・どこで・何が・今はどうしているか」の4点に分解する。想像で埋めず、evidence.voice / evidence.council に対応するものだけ書く。",
+      "properties": {
+        "when": { "type": "string", "description": "いつ（時間帯・季節・ライフイベント）" },
+        "where": { "type": "string", "description": "どこで（地区・経路・施設）" },
+        "what": { "type": "string", "description": "何に困るか" },
+        "now": { "type": "string", "description": "今はどうやってしのいでいるか（＝代替手段のコスト）" }
+      }
+    },
+    "scene": {
+      "type": "object",
+      "required": ["panels"],
+      "description": "困っている場面を3コマの絵にする。1コマ目=いまの状況、2コマ目=ぶつかる壁、3コマ目=こうしたい。全カードで同じ3幕構成にそろえる。",
+      "properties": {
+        "panels": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["icon", "text"],
+            "properties": {
+              "icon": { "type": "string", "description": "アイコン ID（docs/assets のシンボル集）" },
+              "text": { "type": "string", "description": "そのコマの説明。40字以内。" }
+            }
+          }
+        }
+      }
+    },
+    "stories": {
+      "type": "array",
+      "minItems": 1,
+      "description": "ユーザーストーリー。〈だれとして / 何がしたい / なぜなら〉の3点セット。1カードに1〜3本。",
+      "items": {
+        "type": "object",
+        "required": ["as", "want", "so"],
+        "properties": {
+          "as": { "type": "string", "description": "だれとして" },
+          "want": { "type": "string", "description": "何がしたい" },
+          "so": { "type": "string", "description": "なぜなら / そうすれば何が変わるか" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["opendata", "council"],
+      "description": "根拠。3系統（オープンデータ / 議会の議論 / 市民の声）。推測はここに書かない。",
+      "properties": {
+        "opendata": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name", "cat", "fact"],
+            "properties": {
+              "name": { "type": "string", "description": "データセット名（配布元の表記どおり）" },
+              "cat": { "type": "string", "description": "カテゴリコードと名称" },
+              "fact": { "type": "string", "description": "実際に中身を読んで確認した件数・列・値" }
+            }
+          }
+        },
+        "council": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["topic", "years", "gist"],
+            "properties": {
+              "topic": { "type": "string", "description": "会議録のテーマ区分" },
+              "years": { "type": "string", "description": "議論のあった年の範囲" },
+              "gist": { "type": "string", "description": "会議録から読み取れる論点。市の公式見解ではない。" }
+            }
+          }
+        },
+        "voice": {
+          "type": "array",
+          "description": "まちづくり達成度アンケートの自由記述。原文のまま引用する。",
+          "items": {
+            "type": "object",
+            "required": ["quote", "year", "area"],
+            "properties": {
+              "quote": { "type": "string" },
+              "year": { "type": "string" },
+              "area": { "type": "string", "description": "地区（北部/中部/東部/南部）と最寄駅" }
+            }
+          }
+        }
+      }
+    },
+    "solution": {
+      "type": "object",
+      "required": ["form", "what", "who"],
+      "properties": {
+        "form": { "type": "string", "description": "作るものの形（地図アプリ / ダッシュボード / API / 通知 など）" },
+        "what": { "type": "array", "items": { "type": "string" }, "description": "具体的な機能。3〜5項目。" },
+        "who": { "type": "string", "description": "誰が使い、誰が運用するか" }
+      }
+    },
+    "kpi": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "効果をどう測るか。オープンデータで測れるものを優先する。"
+    },
+    "feasibility": {
+      "type": "object",
+      "required": ["data", "difficulty", "missing"],
+      "properties": {
+        "data": { "type": "integer", "minimum": 1, "maximum": 5, "description": "データ充足度。5＝今あるデータだけで作れる。" },
+        "difficulty": { "type": "integer", "minimum": 1, "maximum": 5, "description": "実装難易度。1＝週末で作れる。" },
+        "missing": { "type": "array", "items": { "type": "string" }, "description": "足りないデータ。市への公開要望のたたき台になる。" }
+      }
+    }
+  }
+}

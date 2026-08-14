@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://code-collection-nagareyama.github.io/awesome-nagareyama-issues/schema/issue.schema.json",
+  "$id": "https://code-collection-nagareyama.github.io/nagareyama-issues/schema/issue.schema.json",
   "title": "Nagareyama Issue Card",
   "description": "流山市のオープンデータと市議会の議論から、想定される社会課題と活用アイデアを1枚に整理するためのスキーム。全カードがこの構造を共有する。",
   "type": "object",

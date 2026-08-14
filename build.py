@@ -16,8 +16,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "data", "issues.json")
 OUT = os.path.join(ROOT, "docs")
 
-SITE_TITLE = "awesome-nagareyama-issues"
-SITE_BRAND = "Awesome Nagareyama Issues"
+SITE_TITLE = "Nagareyama Issues"
+SITE_BRAND = "Nagareyama Issues"
 SITE_TAGLINE = "データをもとに描きだした課題"
 
 # テーマごとのアクセント色。カード・図・チップで共通に使う。

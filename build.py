@@ -17,6 +17,8 @@ DATA = os.path.join(ROOT, "data", "issues.json")
 OUT = os.path.join(ROOT, "docs")
 
 SITE_TITLE = "awesome-nagareyama-issues"
+SITE_BRAND = "流山イシュー"
+SITE_TAGLINE = "データがあれば解ける社会課題"
 
 # テーマごとのアクセント色。カード・図・チップで共通に使う。
 THEME_COLOR = {
@@ -160,26 +162,34 @@ def meter(value, maximum=5, label=""):
 
 
 # ---------------------------------------------------------------- layout
-def page(title, body, css_depth=0, desc=""):
+def nav_link(label, href, current, name):
+    cls = "nav-link active" if current == name else "nav-link"
+    return f'<a class="{cls}" href="{href}">{label}</a>'
+
+
+def page(title, body, css_depth=0, desc="", nav="index"):
     up = "../" * css_depth
     return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{up}assets/site.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%BE%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 {icon_defs()}
-<header class="topbar">
-  <a class="brand" href="{up}index.html"><span class="brand-mark">◆</span> {SITE_TITLE}</a>
-  <nav>
-    <a href="{up}index.html">課題一覧</a>
-    <a href="{up}template.html">テンプレート</a>
-    <a href="{up}sources.html">データ出典</a>
+<header class="header">
+  <a class="brand" href="{up}index.html">{SITE_BRAND}<small>{SITE_TAGLINE}</small></a>
+  <nav class="nav" aria-label="メインメニュー">
+    {nav_link("課題一覧", up + "index.html", nav, "index")}
+    {nav_link("テンプレート", up + "template.html", nav, "template")}
+    {nav_link("データ出典", up + "sources.html", nav, "sources")}
   </nav>
 </header>
 <main>
@@ -280,7 +290,7 @@ def render_index(d):
   <ul class="backlog-list">{backlog}</ul>
 </section>
 """
-    return page(f"{SITE_TITLE} — {m['subtitle']}", body, 0, m["subtitle"])
+    return page(f"{SITE_TITLE} — {m['subtitle']}", body, 0, m["subtitle"], nav="index")
 
 
 def render_issue(it, prev_it, next_it):
@@ -430,7 +440,7 @@ def render_issue(it, prev_it, next_it):
   <nav class="prevnext">{''.join(nav)}</nav>
 </article>
 """
-    return page(f"{it['id']} {it['title']} — {SITE_TITLE}", body, 1, it["catch"])
+    return page(f"{it['id']} {it['title']} — {SITE_TITLE}", body, 1, it["catch"], nav="index")
 
 
 def render_template_page(d):
@@ -496,7 +506,7 @@ def render_template_page(d):
 {esc(json.dumps({'feasibility': sample['feasibility']}, ensure_ascii=False, indent=2))}</pre>
 </section>
 """
-    return page(f"テンプレート — {SITE_TITLE}", body, 0, "課題カードのテンプレート仕様")
+    return page(f"テンプレート — {SITE_TITLE}", body, 0, "課題カードのテンプレート仕様", nav="template")
 
 
 def render_sources(d):
@@ -587,59 +597,61 @@ def render_sources(d):
   </ul>
 </section>
 """
-    return page(f"データ出典 — {SITE_TITLE}", body, 0, "根拠に使ったデータと、その扱い方")
+    return page(f"データ出典 — {SITE_TITLE}", body, 0, "根拠に使ったデータと、その扱い方", nav="sources")
 
 
 CSS = """
 :root{
-  --bg:#fbfaf7; --panel:#ffffff; --ink:#1c1a17; --ink2:#55504a; --ink3:#8a837a;
-  --line:#e3ded5; --line2:#efeae2; --accent:#1f6f4a; --code:#f3f0ea;
-  --shadow:0 1px 2px rgba(28,26,23,.05), 0 8px 24px -16px rgba(28,26,23,.22);
+  --ink:#1f2a24; --ink-soft:#55645b; --dim:#78857d;
+  --paper:#f5f5f0; --panel:#ffffff; --line:#dcded6;
+  --green:#2c6e49; --green-deep:#1d4f34; --green-pale:#eef4ea;
+  --font-sans:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  --font-serif:'Zen Old Mincho','Hiragino Mincho ProN',serif;
+  --bg:var(--paper); --ink2:var(--ink-soft); --ink3:var(--dim);
+  --line2:#eceee6; --accent:var(--green); --code:#eef4ea;
+  --shadow:0 1px 2px rgba(31,42,36,.05), 0 8px 24px -16px rgba(31,42,36,.22);
   --maxw:1120px;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#14140f; --panel:#1c1c17; --ink:#eae6dd; --ink2:#b0aa9f; --ink3:#7e786e;
-    --line:#2e2e26; --line2:#26261f; --accent:#5cc08c; --code:#22221b;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#14140f; --panel:#1c1c17; --ink:#eae6dd; --ink2:#b0aa9f; --ink3:#7e786e;
-  --line:#2e2e26; --line2:#26261f; --accent:#5cc08c; --code:#22221b;
-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
 }
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
-  margin:0; background:var(--bg); color:var(--ink);
-  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic Medium","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-size:16px; line-height:1.85; letter-spacing:.01em;
-  font-feature-settings:"palt" 1;
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--font-sans);
+  font-size:15px; line-height:1.75;
+  overflow-wrap:anywhere; word-break:normal; line-break:strict;
 }
-a{color:inherit}
-main{max-width:var(--maxw); margin:0 auto; padding:0 20px 72px}
+a{color:var(--green)}
+main{max-width:var(--maxw); margin:0 auto; padding:24px 20px 56px}
 h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 
-/* topbar */
-.topbar{
-  position:sticky; top:0; z-index:20; display:flex; gap:20px; align-items:center;
-  justify-content:space-between; flex-wrap:wrap;
-  padding:12px 20px; background:color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
+/* header — 流山データアトラス / 流山マップと同じ帯 */
+.header{
+  display:flex; align-items:center; gap:16px 24px; flex-wrap:wrap;
+  padding:12px 24px; padding-top:max(12px, env(safe-area-inset-top));
+  background:var(--green-deep); color:#f2f5ee;
 }
-.brand{font-weight:700; text-decoration:none; letter-spacing:.02em; font-size:15px}
-.brand-mark{color:var(--accent); margin-right:4px}
-.topbar nav{display:flex; gap:18px; font-size:14px}
-.topbar nav a{color:var(--ink2); text-decoration:none; padding:2px 0; border-bottom:1px solid transparent}
-.topbar nav a:hover{color:var(--ink); border-bottom-color:var(--accent)}
+.brand{
+  font-family:var(--font-serif); font-size:21px; font-weight:700;
+  letter-spacing:.06em; color:#f2f5ee; text-decoration:none; flex:1 1 auto;
+}
+.brand small{
+  display:block; font-family:var(--font-sans); font-size:10.5px; font-weight:400;
+  letter-spacing:.18em; opacity:.78;
+}
+.nav{display:flex; gap:6px}
+.nav-link{
+  color:#dfe8dc; text-decoration:none; padding:6px 12px; border-radius:7px; font-size:13.5px;
+}
+.nav-link:hover{background:rgba(255,255,255,.12)}
+.nav-link.active{background:rgba(255,255,255,.16); color:#fff; font-weight:700}
 
 /* hero */
 .hero{padding:56px 0 32px; max-width:900px}
 .hero.narrow{max-width:760px}
-.kicker{margin:0 0 12px; font-size:13px; letter-spacing:.14em; color:var(--accent); font-weight:700}
-.hero h1{margin:0 0 20px; font-size:clamp(26px,4vw,40px); font-weight:800; letter-spacing:-.01em}
+.kicker{margin:0 0 12px; font-size:13px; letter-spacing:.14em; color:var(--green-deep); font-weight:700}
+.hero h1{margin:0 0 20px; font-size:clamp(26px,4vw,36px); font-weight:700; letter-spacing:.02em;
+  font-family:var(--font-serif); color:var(--green-deep)}
 .lede{margin:0; color:var(--ink2); font-size:16px; max-width:70ch}
 .lede a{color:var(--accent)}
 
@@ -705,7 +717,8 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 .crumbs span{margin:0 6px}
 .issue{max-width:900px; margin:0 auto}
 .issue-head{padding:18px 0 30px; border-bottom:1px solid var(--line)}
-.issue-head h1{margin:14px 0 14px; font-size:clamp(24px,3.6vw,34px); font-weight:800; letter-spacing:-.01em}
+.issue-head h1{margin:14px 0 14px; font-size:clamp(22px,3.6vw,32px); font-weight:700; letter-spacing:.02em;
+  font-family:var(--font-serif); color:var(--green-deep)}
 .issue-catch{margin:0; font-size:15.5px; color:var(--ink2); max-width:66ch;
   border-left:3px solid var(--c); padding-left:14px}
 .block{padding:38px 0; border-bottom:1px solid var(--line2)}
@@ -722,11 +735,12 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 .persona-ico{color:var(--c); flex:0 0 auto}
 .persona-label{font-weight:700; font-size:14.5px; margin-bottom:4px}
 .persona p{margin:0; font-size:14px; color:var(--ink2)}
-.pain{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px; margin:14px 0 0;
+.pain{display:grid; grid-template-columns:1fr 1fr; gap:1px; margin:14px 0 0;
   background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden}
-.pain>div{background:var(--panel); padding:14px 16px}
+.pain>div{background:var(--panel); padding:14px 16px; min-width:0}
 .pain dt{font-size:11.5px; letter-spacing:.08em; color:var(--c); font-weight:700; margin-bottom:4px}
 .pain dd{margin:0; font-size:13.5px; color:var(--ink2); line-height:1.8}
+@media(max-width:700px){.pain{grid-template-columns:1fr}}
 
 /* scene svg */
 .scene-wrap{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; overflow-x:auto}
@@ -827,10 +841,20 @@ code{background:var(--code); border-radius:4px; padding:1px 5px; font-size:12.5p
 .notes{list-style:disc; padding-left:20px}
 .notes li{margin:6px 0}
 
-.foot{max-width:var(--maxw); margin:0 auto; padding:26px 20px 44px; border-top:1px solid var(--line);
-  color:var(--ink3); font-size:12px; line-height:1.85}
-.foot p{margin:0 0 6px; max-width:90ch}
-.foot a{color:var(--ink2)}
+.foot{
+  border-top:1px solid var(--line);
+  padding:16px 20px calc(16px + env(safe-area-inset-bottom));
+  color:var(--dim); font-size:12px; line-height:1.85; text-align:center;
+}
+.foot p{margin:0 0 6px}
+.foot a{color:var(--green)}
+@media(max-width:700px){
+  .header{padding:10px 14px; padding-top:max(10px, env(safe-area-inset-top)); gap:8px 12px}
+  .brand{font-size:17px; flex-basis:100%}
+  .nav{flex:1 1 auto}
+  .nav-link{padding:6px 10px; font-size:12.5px}
+  main{padding:18px 14px 44px}
+}
 """
 
 JS = """

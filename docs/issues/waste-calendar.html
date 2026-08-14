@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N-10 収集曜日は142地域分ある。それでも「今日は何のごみか」が分からない — awesome-nagareyama-issues</title>
+<meta name="description" content="ごみの収集曜日は142行、5区分（燃やすごみ／容器包装プラスチック類／燃やさないごみ／ペットボトル／有害危険ごみ）で公開済み。一方でごみ出し支援は集積所約5,700か所規模で運用されている。">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%BE%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-elder" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="11" r="5.5"/><path d="M17 17v12M9.5 21h15M17 29l-4.5 13M17 29l4.5 13"/><path d="M33 20v23M28.5 21h4.5"/></symbol><symbol id="i-parentchild" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="10" r="5"/><path d="M15 15v11M8 20h14M15 26l-4 13M15 26l4 13"/><circle cx="33" cy="21" r="4"/><path d="M33 25v7M28 28h10M33 32l-2.5 8M33 32l2.5 8"/><path d="M22 28h6"/></symbol><symbol id="i-people" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="4.5"/><path d="M5 34c0-5 3-9 7-9s7 4 7 9"/><circle cx="36" cy="14" r="4.5"/><path d="M29 34c0-5 3-9 7-9s7 4 7 9"/><circle cx="24" cy="20" r="5.5"/><path d="M15 42c0-6 4-11 9-11s9 5 9 11"/></symbol><symbol id="i-bus" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="36" height="23" rx="4"/><path d="M6 21h36M15 15v6M24 15v6M33 15v6"/><circle cx="14" cy="37" r="3.5"/><circle cx="34" cy="37" r="3.5"/></symbol><symbol id="i-busstop" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="5" width="26" height="14" rx="3"/><path d="M24 19v25M16 44h16"/><path d="M17 12h14"/></symbol><symbol id="i-basket" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17h30l-3.5 22a2 2 0 0 1-2 2h-19a2 2 0 0 1-2-2z"/><path d="M17 17l4-10M31 17l-4-10"/><path d="M19 24v10M29 24v10"/></symbol><symbol id="i-shop" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18h34v21a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><path d="M6 18l4-9h28l4 9"/><path d="M19 41V28h10v13"/></symbol><symbol id="i-home" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 23L24 9l17 14"/><path d="M12 22v18h24V22"/><path d="M20 40V29h8v11"/></symbol><symbol id="i-building" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="6" width="26" height="36" rx="2"/><path d="M17 14h4M27 14h4M17 22h4M27 22h4M17 30h4M27 30h4"/><path d="M20 42v-6h8v6"/></symbol><symbol id="i-school" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21L24 11l16 10"/><path d="M11 21v20h26V21"/><path d="M24 11V4h8v5h-8"/><path d="M20 41V30h8v11"/></symbol><symbol id="i-hospital" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="13" width="32" height="29" rx="3"/><path d="M24 20v15M16.5 27.5h15"/><path d="M17 13V7h14v6"/></symbol><symbol id="i-heart" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 41C10 31 7 22 13 16.5c4.6-4.2 9.7-.8 11 3 1.3-3.8 6.4-7.2 11-3C41 22 38 31 24 41z"/><path d="M25 19l-4.5 8h6l-3.5 8"/></symbol><symbol id="i-flood" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 25l11-10 11 10"/><path d="M17 25v8M31 25v8"/><path d="M5 34c4-4 8-4 12 0s8 4 12 0 8-4 12 0"/><path d="M5 42c4-4 8-4 12 0s8 4 12 0 8-4 12 0"/></symbol><symbol id="i-shelter" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20L24 8l16 12"/><path d="M12 20v20h24V20"/><path d="M24 40V25"/><path d="M18 31l6-6 6 6"/></symbol><symbol id="i-trash" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15h26l-2.2 25a2 2 0 0 1-2 1.8H15.2a2 2 0 0 1-2-1.8z"/><path d="M7 15h34"/><path d="M18 15v-4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><path d="M20 22v12M28 22v12"/></symbol><symbol id="i-calendar" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="11" width="34" height="31" rx="3"/><path d="M7 21h34M16 6v9M32 6v9"/><circle cx="17" cy="29" r="1.8"/><circle cx="24" cy="29" r="1.8"/><circle cx="31" cy="29" r="1.8"/><circle cx="17" cy="36" r="1.8"/></symbol><symbol id="i-clock" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="17"/><path d="M24 12v12l8 6"/></symbol><symbol id="i-map" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14l12-5 12 5 12-5v25l-12 5-12-5-12 5z"/><path d="M18 9v25M30 14v25"/></symbol><symbol id="i-coin" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="16"/><path d="M17 15l7 9 7-9"/><path d="M24 24v13M18 27h12M18 32h12"/></symbol><symbol id="i-doc" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5h16l9 9v29a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M28 5v10h9"/><path d="M17 24h14M17 31h14M17 38h8"/></symbol><symbol id="i-phone" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="4" width="20" height="40" rx="4"/><path d="M20 9h8"/><circle cx="24" cy="38" r="2"/></symbol><symbol id="i-search" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="21" cy="21" r="13"/><path d="M30.5 30.5L42 42"/></symbol><symbol id="i-question" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="17"/><path d="M19 19a5 5 0 1 1 6.5 4.8c-1 .4-1.5 1.2-1.5 2.2v2"/><circle cx="24" cy="34" r="1.8"/></symbol><symbol id="i-alert" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 7l19 33H5z"/><path d="M24 19v11"/><circle cx="24" cy="35" r="1.8"/></symbol><symbol id="i-wall" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="11" width="36" height="26" rx="2"/><path d="M6 20h36M6 28h36"/><path d="M18 11v9M30 11v9M13 20v8M25 20v8M37 20v8M18 28v9M30 28v9"/></symbol><symbol id="i-chart" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7v33h33"/><rect x="14" y="26" width="6" height="14"/><rect x="24" y="18" width="6" height="22"/><rect x="34" y="11" width="6" height="29"/></symbol><symbol id="i-park" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 42V26"/><circle cx="24" cy="18" r="11"/><path d="M24 30l-7-6M24 33l7-6"/></symbol><symbol id="i-bicycle" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="33" r="8"/><circle cx="36" cy="33" r="8"/><path d="M12 33l8-14h9M20 19l10 14M27 19h7"/></symbol><symbol id="i-car" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 29l4-11a3 3 0 0 1 3-2h16a3 3 0 0 1 3 2l4 11"/><rect x="6" y="29" width="36" height="9" rx="3"/><circle cx="15" cy="40" r="2.5"/><circle cx="33" cy="40" r="2.5"/></symbol></defs></svg>
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="brand-mark">◆</span> awesome-nagareyama-issues</a>
+  <nav>
+    <a href="../index.html">課題一覧</a>
+    <a href="../template.html">テンプレート</a>
+    <a href="../sources.html">データ出典</a>
+  </nav>
+</header>
+<main>
+
+<article class="issue" style="--c:#047857">
+  <nav class="crumbs"><a href="../index.html">課題一覧</a> <span>/</span> N-10</nav>
+
+  <header class="issue-head">
+    <span class="card-theme big">環境</span>
+    <h1>収集曜日は142地域分ある。それでも「今日は何のごみか」が分からない</h1>
+    <p class="issue-catch">ごみの収集曜日は142行、5区分（燃やすごみ／容器包装プラスチック類／燃やさないごみ／ペットボトル／有害危険ごみ）で公開済み。一方でごみ出し支援は集積所約5,700か所規模で運用されている。</p>
+  </header>
+
+  <section class="block persona-block">
+    <h2><span class="n">1</span>だれの、どの場面か</h2>
+    <div class="persona">
+      <span class="persona-ico"><svg width="44" height="44" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-trash"/></svg></span>
+      <div>
+        <div class="persona-label">先月転入した世帯、および出しに行けない高齢者</div>
+        <p>転入時にごみカレンダーの紙をもらったが、どこかにしまった。品目ごとの分別も自信がない。近所には、集積所まで出しに行けなくなった人もいる。</p>
+      </div>
+    </div>
+    <dl class="pain">
+      <div><dt>いつ</dt><dd>毎朝、ごみを出す直前</dd></div>
+      <div><dt>どこで</dt><dd>自宅と集積所</dd></div>
+      <div><dt>何に困るか</dt><dd>自分の地域が142区分のどれかを覚えていない。品目からの分別も調べにくい。日本語以外の話者にはさらに届きにくい</dd></div>
+      <div><dt>今はどうしているか</dt><dd>紙のカレンダーを探す。分からない品目は出さずに溜める。出し間違えて残される</dd></div>
+    </dl>
+  </section>
+
+  <section class="block">
+    <h2><span class="n">2</span>困っている場面</h2>
+    <div class="scene-wrap"><svg class="scene" viewBox="0 0 780 244" role="img" aria-label="困っている場面の3コマ図" xmlns="http://www.w3.org/2000/svg"><g class="pnl pnl-now" transform="translate(0,6)"><rect class="pnl-bg" x="0" y="0" width="240" height="232" rx="14"/><rect class="pnl-tab" x="14" y="14" width="44" height="24" rx="12"/><text class="pnl-tablabel" x="36.0" y="30" text-anchor="middle">いま</text><g class="pnl-icon" transform="translate(90.0,52)"><svg x="0" y="0" width="60" height="60" viewBox="0 0 48 48"><use href="#i-trash"/></svg></g><text class="pnl-text" x="120.0" y="138" text-anchor="middle">朝、出す直前。今日は燃やすご</text><text class="pnl-text" x="120.0" y="159" text-anchor="middle">みだったか、プラだったか</text></g><g class="arrow"><path d="M246 122h14"/><path d="M255 117l5 5-5 5"/></g><g class="pnl pnl-wall" transform="translate(270,6)"><rect class="pnl-bg" x="0" y="0" width="240" height="232" rx="14"/><rect class="pnl-tab" x="14" y="14" width="83" height="24" rx="12"/><text class="pnl-tablabel" x="55.5" y="30" text-anchor="middle">ぶつかる壁</text><g class="pnl-icon" transform="translate(90.0,52)"><svg x="0" y="0" width="60" height="60" viewBox="0 0 48 48"><use href="#i-calendar"/></svg></g><text class="pnl-text" x="120.0" y="138" text-anchor="middle">142地域分の表のどこが自分</text><text class="pnl-text" x="120.0" y="159" text-anchor="middle">の地域か。紙はどこかにいった</text></g><g class="arrow"><path d="M516 122h14"/><path d="M525 117l5 5-5 5"/></g><g class="pnl pnl-wish" transform="translate(540,6)"><rect class="pnl-bg" x="0" y="0" width="240" height="232" rx="14"/><rect class="pnl-tab" x="14" y="14" width="83" height="24" rx="12"/><text class="pnl-tablabel" x="55.5" y="30" text-anchor="middle">こうしたい</text><g class="pnl-icon" transform="translate(90.0,52)"><svg x="0" y="0" width="60" height="60" viewBox="0 0 48 48"><use href="#i-phone"/></svg></g><text class="pnl-text" x="120.0" y="138" text-anchor="middle">住所を一度登録すれば、前日の</text><text class="pnl-text" x="120.0" y="159" text-anchor="middle">夜に通知が来る。品目名から分</text><text class="pnl-text" x="120.0" y="180" text-anchor="middle">別も引ける</text></g></svg></div>
+  </section>
+
+  <section class="block">
+    <h2><span class="n">3</span>ユーザーストーリー</h2>
+    <ul class="stories"><li class="story">
+  <span class="story-part"><span class="story-k">だれとして</span>転入したばかりの住民として</span>
+  <span class="story-part"><span class="story-k">何がしたい</span>住所を一度入れるだけで、自分の地域の収集日が分かって通知が来てほしい</span>
+  <span class="story-part"><span class="story-k">なぜなら</span>毎朝カレンダーを探さずに済む</span>
+</li><li class="story">
+  <span class="story-part"><span class="story-k">だれとして</span>出しに行けなくなった高齢者の家族として</span>
+  <span class="story-part"><span class="story-k">何がしたい</span>収集日の案内と同じ画面で、ごみ出し支援の対象と申込み方法を知りたい</span>
+  <span class="story-part"><span class="story-k">なぜなら</span>制度があることに気づける</span>
+</li><li class="story">
+  <span class="story-part"><span class="story-k">だれとして</span>日本語を第一言語としない住民として</span>
+  <span class="story-part"><span class="story-k">何がしたい</span>品目名を自分の言語で検索して分別区分を知りたい</span>
+  <span class="story-part"><span class="story-k">なぜなら</span>近所とのトラブルを避けられる</span>
+</li></ul>
+  </section>
+
+  <section class="block">
+    <h2><span class="n">4</span>根拠</h2>
+    <div class="evidence">
+      <div class="ev-col">
+        <h3><span class="ev-tag t-od">オープンデータ</span>使えるデータセット</h3>
+        <ul class="ev-list"><li><div class="ev-name">ごみの収集曜日</div><div class="ev-cat">c_04 環境・リサイクル</div><div class="ev-fact">142行。地域名／燃やすごみ／容器包装プラスチック類／燃やさないごみ／ペットボトル／有害危険ごみ</div></li><li><div class="ev-name">ごみの分別・処分方法</div><div class="ev-cat">c_04 環境・リサイクル</div><div class="ev-fact">品目別の分別区分。検索の辞書として使える</div></li><li><div class="ev-name">流山市内字（あざ）一覧表</div><div class="ev-cat">c_18 その他の情報</div><div class="ev-fact">住所と字の対応。収集曜日の「地域名」と町丁字を結ぶ手がかりになる</div></li><li><div class="ev-name">令和7年度高齢者人口・世帯数</div><div class="ev-cat">c_10 高齢者・介護</div><div class="ev-fact">ごみ出し支援の潜在対象規模の推計に使える</div></li></ul>
+      </div>
+      <div class="ev-col">
+        <h3><span class="ev-tag t-council">議会</span>会議録から読み取れる論点</h3>
+        <ul class="ev-list"><li><div class="ev-name">環境・ごみ <span class="ev-yr">2018〜2026</span></div><div class="ev-fact">高齢者等ごみ出し支援が、有害危険ごみの収集と併せた個別収集として集積所約5,500〜5,700か所規模で運用されている。対象品目はリチウムイオン電池製品などへ拡大された</div></li><li><div class="ev-name">環境・ごみ <span class="ev-yr">2020〜2021</span></div><div class="ev-fact">人口が増えてもごみ総量を増やさない方針のもと、指定ごみ袋導入の検討、焼却施設の能力を超えない運用、令和5年度約4万7,500トンをピークとする焼却量の見通しが議論されている</div></li></ul>
+      </div>
+      <div class="ev-col"><h3><span class="ev-tag t-voice">市民の声</span>まちづくり達成度アンケート 自由記述</h3><ul class="voices"><li><blockquote>ゴミ収集日を増やして欲しい。ごみが散乱している。</blockquote><cite>2020年・南部・南流山駅</cite></li><li><blockquote>英語での対応。ごみの捨て方、税金等の詳細情報。</blockquote><cite>2020年・中部・江戸川台駅</cite></li><li><blockquote>電線地中化し、電柱、電線をなくして街の景観をよくして欲しい。ゴミ収集を個別収集方式にして欲しい。</blockquote><cite>2020年・中部・流山おおたかの森駅</cite></li></ul></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2><span class="n">5</span>オープンデータ活用のかたち</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-lbl">使うデータ</div>
+        <div class="flow-chips"><span class="flow-chip">ごみの収集曜日</span><span class="flow-chip">ごみの分別・処分方法</span><span class="flow-chip">流山市内字（あざ）一覧表</span><span class="flow-chip">令和7年度高齢者人口・世帯数</span></div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-lbl">つくるもの</div>
+        <div class="flow-form">住所を1回登録するだけの通知アプリ（Webで完結、インストール不要）</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-lbl">届く人</div>
+        <div class="flow-who">全住民。特に転入者と外国籍住民。ごみ出し支援の導線は高齢者とその家族</div>
+      </div>
+    </div>
+    <ul class="features"><li>住所を入れると142地域のどれかに解決し、今日・明日の収集区分を出す</li><li>前日夜にブラウザ通知を送る</li><li>品目名で分別を検索する（多言語。まずは英語・中国語・ベトナム語）</li><li>同じ画面から、高齢者等ごみ出し支援の対象条件と申込み先へ導線を置く</li></ul>
+  </section>
+
+  <section class="block two">
+    <div>
+      <h2><span class="n">6</span>どう測るか</h2>
+      <ul class="kpi"><li>分別誤りによる収集残置の件数</li><li>ごみ出し支援制度の認知率・申込み件数</li><li>転入者アンケートでの「ごみの出し方が分かりにくい」回答の割合</li></ul>
+    </div>
+    <div>
+      <h2><span class="n">7</span>実現度と、足りないデータ</h2>
+      <div class="feas">
+        <div class="feas-row"><span>データ充足度</span><span class="meter" title="データ充足度: 5/5"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><em>5/5</em></div>
+        <div class="feas-row"><span>実装難易度</span><span class="meter" title="実装難易度: 1/5"><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><em>1/5</em></div>
+      </div>
+      <h4>足りないデータ（公開要望のたたき台）</h4>
+      <ul class="missing"><li>「地域名」と町丁字・地番の正式な対応表（地域名は収集ルート由来の独自区分で、住所からの自動解決が確実にできない）</li><li>祝日・年末年始の運休カレンダー</li><li>集積所の位置（約5,700か所あるが公開されていない）</li></ul>
+    </div>
+  </section>
+
+  <nav class="prevnext"><a class="pn prev" href="aed-when-open.html"><span>← N-09</span>夜10時に使えるAEDは、何台あるのか</a><span></span></nav>
+</article>
+
+</main>
+<footer class="foot">
+  <p>出典: <a href="https://www.city.nagareyama.chiba.jp/opendata/1042063/1042065.html">流山市オープンデータカタログサイト</a>（259データセット）、流山市議会 会議録（2018〜2026年）、ながれやままちづくり達成度アンケート自由記述（13,561件）。</p>
+  <p>本サイトの課題整理・活用アイデアは有志によるもので、流山市の見解ではありません。会議録の要約は機械処理を含みます。引用は原典を確認してください。</p>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -69,6 +69,38 @@ ICONS = {
     "car": """<path d="M9 29l4-11a3 3 0 0 1 3-2h16a3 3 0 0 1 3 2l4 11"/><rect x="6" y="29" width="36" height="9" rx="3"/><circle cx="15" cy="40" r="2.5"/><circle cx="33" cy="40" r="2.5"/>""",
 }
 
+ICON_LABEL = {
+    "elder": "高齢者",
+    "parentchild": "親子",
+    "people": "人びと",
+    "bus": "バス",
+    "busstop": "バス停",
+    "basket": "買い物",
+    "shop": "店舗",
+    "home": "住まい",
+    "building": "施設",
+    "school": "学校",
+    "hospital": "病院",
+    "heart": "救急",
+    "flood": "浸水",
+    "shelter": "避難所",
+    "trash": "ごみ",
+    "calendar": "日程",
+    "clock": "時間",
+    "map": "地図",
+    "coin": "財政",
+    "doc": "書類",
+    "phone": "スマホ",
+    "search": "検索",
+    "question": "わからない",
+    "alert": "注意",
+    "wall": "壁",
+    "chart": "グラフ",
+    "park": "緑地",
+    "bicycle": "自転車",
+    "car": "車",
+}
+
 STAGES = [("いま", "now"), ("ぶつかる壁", "wall"), ("こうしたい", "wish")]
 
 
@@ -81,17 +113,36 @@ NO_LINE_START = "、。，．・：；）］｝」』〉》ー！？!?,.）】"
 
 
 def wrap_jp(text, per_line=15, max_lines=4):
-    """日本語の等幅前提でざっくり折り返す。句読点は行頭に送らない。"""
-    lines, cur = [], ""
+    """句読点の直後を優先して折り返す。無いときだけ字数で切る。"""
+    prefer = "。、．，!？"
+    chunks, buf = [], ""
     for ch in text:
-        if len(cur) >= per_line and ch not in NO_LINE_START:
+        buf += ch
+        if ch in prefer:
+            chunks.append(buf)
+            buf = ""
+    if buf:
+        chunks.append(buf)
+
+    lines, cur = [], ""
+    for chunk in chunks:
+        if cur and len(cur) + len(chunk) > per_line + 2:
             lines.append(cur)
             cur = ""
-        cur += ch
+        cur += chunk
+        while len(cur) > per_line + 4:
+            cut = per_line
+            while cut < len(cur) and cur[cut] in NO_LINE_START:
+                cut += 1
+            if cut >= len(cur):
+                break
+            lines.append(cur[:cut])
+            cur = cur[cut:]
     if cur:
         lines.append(cur)
     if len(lines) > max_lines:
-        lines = lines[: max_lines - 1] + [lines[max_lines - 1][: per_line - 1] + "…"]
+        last = lines[max_lines - 1]
+        lines = lines[: max_lines - 1] + [last[: max(1, per_line - 1)] + "…"]
     return lines
 
 
@@ -489,9 +540,9 @@ def render_template_page(d):
   <h2>3コマ図について</h2>
   <p class="sub">困っている場面は、すべて同じ3幕でそろえています。1コマ目で当事者のいまを出し、2コマ目で壁を一つに絞り、3コマ目でデータが効く形を示しました。絵は都度描き起こさず、共通のシンボルから選んでいます。</p>
   <div class="scene-wrap" style="--c:{THEME_COLOR[sample['theme']]}">{scene_svg(sample['scene']['panels'], THEME_COLOR[sample['theme']])}</div>
-  <p class="sub">上は「{esc(sample['title'])}」のカードです。10枚すべてが、この骨格で書かれています。</p>
+  <p class="sub">上は「{esc(sample['title'])}」のカードです。10枚すべてが、この骨格で書かれています。下は、3コマに使った共通のシンボルです。</p>
   <div class="iconset">
-    {''.join(f'<span class="ic"><span>{use_icon(k, 28)}</span></span>' for k in ICONS)}
+    {''.join(f'<span class="ic"><span>{use_icon(k, 28)}</span><span class="lbl">{esc(ICON_LABEL[k])}</span></span>' for k in ICONS)}
   </div>
 </section>
 """
@@ -608,7 +659,7 @@ body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:var(--font-sans);
   font-size:15px; line-height:1.75;
-  overflow-wrap:anywhere; word-break:normal; line-break:strict;
+  overflow-wrap:break-word; word-break:normal; line-break:auto;
 }
 a{color:var(--green)}
 main{max-width:var(--maxw); margin:0 auto; padding:24px 20px 56px}
@@ -623,6 +674,7 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 .brand{
   font-family:var(--font-serif); font-size:clamp(16px,2.2vw,20px); font-weight:700;
   letter-spacing:.03em; color:#f2f5ee; text-decoration:none; flex:1 1 auto;
+  min-width:0; overflow-wrap:normal; word-break:keep-all;
 }
 .brand small{
   display:block; font-family:var(--font-sans); font-size:10.5px; font-weight:400;
@@ -641,10 +693,10 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 .kicker{margin:0 0 12px; font-size:13px; letter-spacing:.14em; color:var(--green-deep); font-weight:700}
 .hero h1{margin:0 0 20px; font-size:clamp(26px,4vw,36px); font-weight:700; letter-spacing:.02em;
   font-family:var(--font-serif); color:var(--green-deep)}
-.lede{margin:0; color:var(--ink2); font-size:16px; max-width:70ch}
+.lede{margin:0; color:var(--ink2); font-size:16px; max-width:42em}
 .lede a{color:var(--accent)}
 
-.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; margin-top:36px;
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr)); gap:1px; margin-top:36px;
   background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden}
 .stat{background:var(--panel); padding:16px 18px}
 .stat-v{font-size:19px; font-weight:700; letter-spacing:-.01em}
@@ -664,7 +716,7 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 .filter-count{margin:0 0 0 auto; font-size:12.5px; color:var(--ink3)}
 
 /* grid */
-.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:14px; padding:28px 0}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(330px,100%),1fr)); gap:14px; padding:28px 0}
 .card{display:flex; flex-direction:column; background:var(--panel); border:1px solid var(--line);
   border-radius:14px; text-decoration:none; overflow:hidden; box-shadow:var(--shadow);
   transition:transform .14s ease, border-color .14s ease}
@@ -693,7 +745,7 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 .backlog h2{font-size:18px; margin:24px 0 4px}
 .sub{color:var(--ink2); font-size:13.5px; margin:0 0 16px; max-width:76ch}
 .sub a{color:var(--accent)}
-.backlog-list{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1px;
+.backlog-list{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr)); gap:1px;
   background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden}
 .backlog-list li{background:var(--panel); padding:14px 16px; display:flex; flex-direction:column; gap:5px}
 .backlog-list strong{font-size:14px}
@@ -708,7 +760,7 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 .issue-head{padding:18px 0 30px; border-bottom:1px solid var(--line)}
 .issue-head h1{margin:14px 0 14px; font-size:clamp(22px,3.6vw,32px); font-weight:700; letter-spacing:.02em;
   font-family:var(--font-serif); color:var(--green-deep)}
-.issue-catch{margin:0; font-size:15.5px; color:var(--ink2); max-width:66ch;
+.issue-catch{margin:0; font-size:15.5px; color:var(--ink2); max-width:40em;
   border-left:3px solid var(--c); padding-left:14px}
 .block{padding:38px 0; border-bottom:1px solid var(--line2)}
 .block:last-of-type{border-bottom:none}
@@ -732,7 +784,7 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 @media(max-width:700px){.pain{grid-template-columns:1fr}}
 
 /* scene svg */
-.scene-wrap{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; overflow-x:auto}
+.scene-wrap{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; overflow-x:auto; -webkit-overflow-scrolling:touch}
 .scene{width:100%; min-width:640px; height:auto; display:block}
 .scene{--sc:var(--c,var(--accent))}
 .scene .pnl-bg{fill:color-mix(in srgb, var(--sc) 5%, var(--panel)); stroke:var(--line)}
@@ -755,7 +807,7 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
 .story-k{display:block; font-size:11px; letter-spacing:.09em; color:var(--c); font-weight:700; margin-bottom:3px}
 
 /* evidence */
-.evidence{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px}
+.evidence{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr)); gap:18px}
 .ev-col h3{display:flex; align-items:center; gap:8px; margin:0 0 10px; font-size:13.5px; font-weight:700; color:var(--ink2)}
 .ev-tag{font-size:10.5px; padding:2px 8px; border-radius:999px; color:#fff; letter-spacing:.04em}
 .t-od{background:#0e7490}.t-council{background:#7c3aed}.t-voice{background:#b45309}
@@ -819,7 +871,7 @@ code{background:var(--code); border-radius:4px; padding:1px 5px; font-size:12.5p
 .iconset{display:flex; flex-wrap:wrap; gap:6px; margin-top:18px}
 .ic{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:8px;
   padding:5px 9px; background:var(--panel); color:var(--accent)}
-.ic code{background:none; color:var(--ink3); font-size:11px; padding:0}
+.ic .lbl{color:var(--ink3); font-size:11.5px; padding:0; white-space:nowrap}
 .usedlist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px;
   background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden}
 .usedlist li{background:var(--panel); padding:10px 14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px}
@@ -839,10 +891,24 @@ code{background:var(--code); border-radius:4px; padding:1px 5px; font-size:12.5p
 .foot a{color:var(--green)}
 @media(max-width:700px){
   .header{padding:10px 14px; padding-top:max(10px, env(safe-area-inset-top)); gap:8px 12px}
-  .brand{font-size:17px; flex-basis:100%}
-  .nav{flex:1 1 auto}
-  .nav-link{padding:6px 10px; font-size:12.5px}
+  .brand{font-size:16px; flex-basis:100%; letter-spacing:.02em}
+  .brand small{letter-spacing:.08em; font-size:10px}
+  .nav{flex:1 1 auto; flex-wrap:wrap; width:100%}
+  .nav-link{padding:8px 10px; font-size:12.5px}
   main{padding:18px 14px 44px}
+  .hero{padding:28px 0 20px}
+  .hero h1,.issue-head h1{font-size:1.45rem; letter-spacing:.01em}
+  .lede,.issue-catch,.sub{max-width:none; font-size:15px}
+  .pain{grid-template-columns:1fr}
+  .story{grid-template-columns:1fr}
+  .block.two{grid-template-columns:1fr; gap:8px}
+  .tname{white-space:normal}
+  .tpl th,.tpl td{padding:10px}
+  .feas-row{flex-wrap:wrap}
+  .feas-row>span:first-child{width:auto}
+  .scene-wrap{margin-inline:-14px; padding:12px 14px; border-radius:0; border-left:none; border-right:none}
+  .card-foot{align-items:flex-start}
+  .filter-count{margin-left:0}
 }
 """
 

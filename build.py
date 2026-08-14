@@ -17,8 +17,8 @@ DATA = os.path.join(ROOT, "data", "issues.json")
 OUT = os.path.join(ROOT, "docs")
 
 SITE_TITLE = "awesome-nagareyama-issues"
-SITE_BRAND = "流山イシュー"
-SITE_TAGLINE = "データがあれば解ける社会課題"
+SITE_BRAND = "Awesome Nagareyama Issues"
+SITE_TAGLINE = "データをもとに描きだした課題"
 
 # テーマごとのアクセント色。カード・図・チップで共通に使う。
 THEME_COLOR = {
@@ -260,8 +260,8 @@ def render_index(d):
   <p class="lede">
     市が公開している{m['counts']['datasets']}データセット（{m['counts']['files']}ファイル・{esc(m['counts']['bytes_label'])}）と、
     {esc(m['counts']['minutes_years'])}年の市議会会議録、まちづくり達成度アンケートの自由記述{m['counts']['survey_comments']:,}件を突き合わせて、
-    「データがあれば解ける、あるいは解きはじめられる」課題を10枚に整理しました。
-    すべてのカードは<a href="template.html">同じテンプレート</a>に沿っています。
+    想定される社会課題を10枚のカードに描きました。
+    すべてのカードは<a href="template.html">同じスキーム</a>に沿っています。
   </p>
   <div class="stats">{ctx}</div>
 </section>
@@ -286,7 +286,7 @@ def render_index(d):
 
 <section class="backlog">
   <h2>次に整理したい候補</h2>
-  <p class="sub">同じテンプレートで書ける材料はあるが、今回の10枚には入れなかったもの。</p>
+  <p class="sub">同じスキームで書ける材料はあるが、今回の10枚には入れなかったもの。</p>
   <ul class="backlog-list">{backlog}</ul>
 </section>
 """
@@ -446,67 +446,56 @@ def render_issue(it, prev_it, next_it):
 def render_template_page(d):
     sample = d["issues"][0]
     fields = [
-        ("1", "だれの、どの場面か", "persona / pain",
-         "ペルソナ（属性と状況）と、困りごとを「いつ・どこで・何に・今はどうしているか」の4点に分解する。想像で埋めず、根拠のある範囲だけ書く。"),
-        ("2", "困っている場面", "scene.panels (3)",
-         "3コマ固定。①いまの状況 ②ぶつかる壁 ③こうしたい。全カードで同じ骨格にして、アイコンと1文だけを差し替える。比較できることを優先する。"),
-        ("3", "ユーザーストーリー", "stories[]",
-         "〈だれとして / 何がしたい / なぜなら〉の3点セット。1カードに1〜3本。行政側の担当者を主語にしたストーリーを最低1本入れる。"),
-        ("4", "根拠", "evidence.opendata / council / voice",
-         "3系統に必ず分ける。オープンデータは実際に中身を読んで件数と列を書く。議会は会議録のテーマと年、市民の声は自由記述を原文のまま。"),
-        ("5", "オープンデータ活用のかたち", "solution",
-         "「使うデータ → つくるもの → 届く人」の3段で書く。機能は3〜5項目。誰が運用するかまで書く。"),
-        ("6", "どう測るか", "kpi[]",
-         "オープンデータで測れる指標を優先する。測れないものは、そのことを書く。"),
-        ("7", "実現度と足りないデータ", "feasibility",
-         "データ充足度と実装難易度を5段階で。足りないデータの列挙が、市への公開要望のたたき台になる。ここが本テンプレートの実用上の要。"),
+        ("1", "だれの、どの場面か",
+         "困りごとを「いつ・どこで・何に・今はどうしているか」の4点に分け、想像で埋めず、根拠のある範囲だけを書きました。"),
+        ("2", "困っている場面",
+         "いま → ぶつかる壁 → こうしたい、の3コマにそろえました。カードごとに絵を描き起こすのではなく、共通のアイコンと一文で、同じ骨格の上に置いています。"),
+        ("3", "ユーザーストーリー",
+         "〈だれとして / 何がしたい / なぜなら〉で書きました。当事者だけでなく、行政側の担当者を主語にした視点も入れています。"),
+        ("4", "根拠",
+         "オープンデータ、議会、市民の声の3系統に分けました。性質の違うものを同じ重さに見せないためです。オープンデータは中身を読み、議会は会議録の論点、市民の声は自由記述を原文のまま載せています。"),
+        ("5", "オープンデータ活用のかたち",
+         "「使うデータ → つくるもの → 届く人」の3段で、データが現場に届く形まで書きました。"),
+        ("6", "どう測るか",
+         "オープンデータで測れる指標を優先し、測れないものはそのことを書きました。"),
+        ("7", "実現度と足りないデータ",
+         "データ充足度と実装難易度を5段階で置き、足りないデータを列挙しました。公開されているものと、されていないものの差が、ここから見えます。"),
     ]
     rows = "".join(
-        f'<tr><td class="tn">{n}</td><td class="tname">{esc(name)}</td>'
-        f'<td class="tkey"><code>{esc(key)}</code></td><td>{esc(desc)}</td></tr>'
-        for n, name, key, desc in fields
+        f'<tr><td class="tn">{n}</td><td class="tname">{esc(name)}</td><td>{esc(desc)}</td></tr>'
+        for n, name, desc in fields
     )
     body = f"""
 <section class="hero narrow">
-  <p class="kicker">設計の考え方</p>
-  <h1>ひとつのテンプレートで、10枚を比べられるようにする</h1>
+  <p class="kicker">このサイトの枠組み</p>
+  <h1>社会課題を、一定のスキームで描き出す</h1>
   <p class="lede">
-    課題を並べただけでは、どれから手をつけるかを決められません。
-    このサイトのカードは全て同じ7ブロックで書かれており、
-    <strong>根拠の強さ</strong>（オープンデータ／議会／市民の声が揃っているか）と
-    <strong>実現度</strong>（データ充足度・実装難易度）で横並びに比較できます。
-    足りないデータの欄は、そのまま市への公開要望の原案になります。
+    わたしたちは、オープンデータと市議会の議論、市民の声を突き合わせたうえで、
+    想定される社会課題を同じ7つのブロックで書き出しました。
+    並べることで、<strong>根拠の厚み</strong>（オープンデータ／議会／市民の声が揃っているか）と
+    <strong>実現度</strong>（データ充足度・実装難易度）を横並びに見られるようにしています。
   </p>
 </section>
 
 <section class="block">
-  <h2>テンプレートの7ブロック</h2>
+  <h2>7つのブロック</h2>
   <table class="tpl">
-    <thead><tr><th></th><th>ブロック</th><th>データ上のキー</th><th>書き方の決めごと</th></tr></thead>
+    <thead><tr><th></th><th>ブロック</th><th>わたしたちが書いたこと</th></tr></thead>
     <tbody>{rows}</tbody>
   </table>
 </section>
 
 <section class="block">
-  <h2>3コマ図の作法</h2>
-  <p class="sub">困っている場面は、すべて同じ3幕でそろえます。アイコンは共通のシンボル集から選ぶだけで、絵を都度描き起こしません。</p>
+  <h2>3コマ図について</h2>
+  <p class="sub">困っている場面は、すべて同じ3幕でそろえています。1コマ目で当事者のいまを出し、2コマ目で壁を一つに絞り、3コマ目でデータが効く形を示しました。絵は都度描き起こさず、共通のシンボルから選んでいます。</p>
   <div class="scene-wrap" style="--c:{THEME_COLOR[sample['theme']]}">{scene_svg(sample['scene']['panels'], THEME_COLOR[sample['theme']])}</div>
-  <p class="sub">上は「{esc(sample['title'])}」の例。1コマ目で当事者を出し、2コマ目で壁を1つだけに絞り、3コマ目でデータが効く形を示します。</p>
+  <p class="sub">上は「{esc(sample['title'])}」のカードです。10枚すべてが、この骨格で書かれています。</p>
   <div class="iconset">
-    {''.join(f'<span class="ic"><span>{use_icon(k, 28)}</span><code>{k}</code></span>' for k in ICONS)}
+    {''.join(f'<span class="ic"><span>{use_icon(k, 28)}</span></span>' for k in ICONS)}
   </div>
 </section>
-
-<section class="block">
-  <h2>データ構造</h2>
-  <p class="sub">全カードは <code>data/issues.json</code> の1レコードです。スキーマは <code>schema/issue.schema.json</code>。
-  ページは <code>build.py</code> が生成します。カードを増やすときはJSONに1件足すだけです。</p>
-  <pre class="code">{esc(json.dumps({k: sample[k] for k in ['id','slug','title','catch','theme']}, ensure_ascii=False, indent=2))}
-  ...
-{esc(json.dumps({'feasibility': sample['feasibility']}, ensure_ascii=False, indent=2))}</pre>
-</section>
 """
-    return page(f"テンプレート — {SITE_TITLE}", body, 0, "課題カードのテンプレート仕様", nav="template")
+    return page(f"テンプレート — {SITE_TITLE}", body, 0, "社会課題を一定のスキームで描き出した考え方", nav="template")
 
 
 def render_sources(d):
@@ -632,8 +621,8 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
   background:var(--green-deep); color:#f2f5ee;
 }
 .brand{
-  font-family:var(--font-serif); font-size:21px; font-weight:700;
-  letter-spacing:.06em; color:#f2f5ee; text-decoration:none; flex:1 1 auto;
+  font-family:var(--font-serif); font-size:clamp(16px,2.2vw,20px); font-weight:700;
+  letter-spacing:.03em; color:#f2f5ee; text-decoration:none; flex:1 1 auto;
 }
 .brand small{
   display:block; font-family:var(--font-sans); font-size:10.5px; font-weight:400;

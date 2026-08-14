@@ -30,8 +30,8 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
   background:var(--green-deep); color:#f2f5ee;
 }
 .brand{
-  font-family:var(--font-serif); font-size:21px; font-weight:700;
-  letter-spacing:.06em; color:#f2f5ee; text-decoration:none; flex:1 1 auto;
+  font-family:var(--font-serif); font-size:clamp(16px,2.2vw,20px); font-weight:700;
+  letter-spacing:.03em; color:#f2f5ee; text-decoration:none; flex:1 1 auto;
 }
 .brand small{
   display:block; font-family:var(--font-sans); font-size:10.5px; font-weight:400;

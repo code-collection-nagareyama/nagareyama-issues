@@ -53,12 +53,18 @@ docs/                     生成物。GitHub Pages の公開ディレクトリ
   sources.html            データ出典と、その扱い方
   issues/<slug>.html      各カードの詳細
   issues.json             カードデータを再利用できるよう配信
-.github/ISSUE_TEMPLATE/   GitHub Issue のひな型（カードへの気づき）
+.github/ISSUE_TEMPLATE/   GitHub Issue のひな型（カードごと + その他。build.py が生成）
 ```
 
 ## 気づきを起票する
 
-各カードの詳細ページから「このカードへの気づきを起票する」を開くと、対象カードが入った [Issue テンプレート](.github/ISSUE_TEMPLATE/card-feedback.yml) が立ち上がります。GitHub の Issue 画面から直接書く場合は、テンプレート「カードへの気づき」を選んでください。
+空の Issue だと、どのカードの・どのブロックの話かが分かりにくいので、**カードごとに GitHub Issue のひな型**を置いています（`python build.py` が `data/issues.json` から生成します）。
+
+- 各カードの詳細ページ「このカードへの気づきを起票する」→ そのカード用のひな型（タイトル・対象カード・カードの要約入り）
+- GitHub の [New issue](https://github.com/code-collection-nagareyama/nagareyama-issues/issues/new/choose) → カード一覧からひな型を選ぶ
+- カードに当てはまらない話は「サイト全体・その他」
+
+ひな型はデフォルトブランチに入ってから GitHub 上で有効になります。
 
 ## カードを追加する
 

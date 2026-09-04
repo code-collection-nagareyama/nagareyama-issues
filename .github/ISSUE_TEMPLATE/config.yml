@@ -1,1 +1,5 @@
 blank_issues_enabled: true
+contact_links:
+  - name: 課題カードを読む
+    url: https://nagareyama-issues.pages.dev/
+    about: 起票の前に、サイトのカードを確認できます

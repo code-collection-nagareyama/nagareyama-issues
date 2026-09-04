@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""data/issues.json から docs/ の静的サイトを生成する。
+"""data/issues.json から docs/ の静的サイトと GitHub Issue ひな型を生成する。
 
     python build.py
 
-生成物は docs/ 以下。GitHub Pages は main ブランチの /docs を公開する設定を想定。
+生成物は docs/ 以下と .github/ISSUE_TEMPLATE/（カードごとの yml）。
+GitHub Pages / Cloudflare Pages は main ブランチの /docs を公開する設定を想定。
 """
 
 import html
 import json
 import os
 import shutil
+from urllib.parse import quote, urlencode
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "data", "issues.json")
@@ -19,6 +21,28 @@ OUT = os.path.join(ROOT, "docs")
 SITE_TITLE = "Nagareyama Issues"
 SITE_BRAND = "Nagareyama Issues"
 SITE_TAGLINE = "データをもとに描きだした課題"
+GITHUB_REPO = "code-collection-nagareyama/nagareyama-issues"
+SITE_ORIGIN = "https://nagareyama-issues.pages.dev"
+ISSUE_TEMPLATE_DIR = os.path.join(ROOT, ".github", "ISSUE_TEMPLATE")
+ISSUE_TEMPLATE_OTHER = "zz-other.yml"
+
+ISSUE_KIND_OPTIONS = [
+    "事実・データの誤り",
+    "表現・書きぶりの改善",
+    "足りない視点・論点",
+    "活用のアイデア",
+    "その他",
+]
+ISSUE_BLOCK_OPTIONS = [
+    "カード全体",
+    "1. だれの、どの場面か",
+    "2. 困っている場面",
+    "3. ユーザーストーリー",
+    "4. 根拠",
+    "5. 活用のかたち",
+    "6. どう測るか",
+    "7. 実現度と足りないデータ",
+]
 
 # テーマごとのアクセント色。カード・図・チップで共通に使う。
 THEME_COLOR = {
@@ -205,6 +229,200 @@ def scene_svg(panels, accent):
     return "".join(out)
 
 
+def yq(s):
+    """JSON 文字列は YAML の二重引用符としても使える。"""
+    return json.dumps(s, ensure_ascii=False)
+
+
+def yaml_block(text, indent):
+    pad = " " * indent
+    lines = text.replace("\r\n", "\n").replace("\r", "\n").rstrip().split("\n")
+    return "\n".join(pad + line.rstrip() if line.strip() else "" for line in lines)
+
+
+def yaml_str_list(items, indent):
+    pad = " " * indent
+    return "\n".join(f"{pad}- {yq(x)}" for x in items)
+
+
+def card_label(it):
+    return f"{it['id']} {it['title']}"
+
+
+def card_page_url(it):
+    return f"{SITE_ORIGIN}/issues/{it['slug']}.html"
+
+
+def issue_template_filename(it):
+    return f"{it['id'].lower()}-{it['slug']}.yml"
+
+
+def github_issue_url(it):
+    """カード詳細から、そのカード用の Issue テンプレートを開く。"""
+    params = urlencode(
+        {
+            "template": issue_template_filename(it),
+            "title": f"[{it['id']}] ",
+        },
+        quote_via=quote,
+        safe="",
+    )
+    return f"https://github.com/{GITHUB_REPO}/issues/new?{params}"
+
+
+def github_issue_chooser_url():
+    return f"https://github.com/{GITHUB_REPO}/issues/new/choose"
+
+
+def issue_form_fields(card_value=None, card_options=None):
+    """kind / block / note と、対象カード欄。"""
+    if card_options is not None:
+        card_field = (
+            "  - type: dropdown\n"
+            "    id: card\n"
+            "    attributes:\n"
+            f"      label: {yq('対象のカード')}\n"
+            f"      description: {yq('どの課題カードについての気づきか。サイト全体の話なら「特定しない」を選んでください。')}\n"
+            "      options:\n"
+            f"{yaml_str_list(card_options, 8)}\n"
+            "    validations:\n"
+            "      required: true\n"
+        )
+    else:
+        card_field = (
+            "  - type: input\n"
+            "    id: card\n"
+            "    attributes:\n"
+            f"      label: {yq('対象のカード')}\n"
+            f"      description: {yq('このひな型はこのカード用です。変えなくて大丈夫です。')}\n"
+            f"      value: {yq(card_value)}\n"
+            "    validations:\n"
+            "      required: true\n"
+        )
+    return (
+        card_field
+        + "  - type: dropdown\n"
+        "    id: kind\n"
+        "    attributes:\n"
+        f"      label: {yq('気づきの種類')}\n"
+        "      options:\n"
+        f"{yaml_str_list(ISSUE_KIND_OPTIONS, 8)}\n"
+        "    validations:\n"
+        "      required: true\n"
+        "  - type: dropdown\n"
+        "    id: block\n"
+        "    attributes:\n"
+        f"      label: {yq('主にどのブロックか')}\n"
+        f"      description: {yq('カードの7ブロックのうち、いちばん近いもの。')}\n"
+        "      options:\n"
+        f"{yaml_str_list(ISSUE_BLOCK_OPTIONS, 8)}\n"
+        "  - type: textarea\n"
+        "    id: note\n"
+        "    attributes:\n"
+        f"      label: {yq('気づいたこと')}\n"
+        f"      description: {yq('該当箇所や出典があると助かります。')}\n"
+        "      placeholder: |\n"
+        + yaml_block("例: 根拠のオープンデータで○○とあるが、カタログでは△△になっている。", 8)
+        + "\n    validations:\n"
+        "      required: true\n"
+    )
+
+
+def card_template_intro(it):
+    od_lines = "\n".join(
+        f"- {e['name']}（{e['cat']}）" for e in it["evidence"]["opendata"]
+    )
+    pain = it["pain"]
+    return "\n".join(
+        [
+            f"## {card_label(it)}",
+            f"テーマ: {it['theme']}",
+            "",
+            it["catch"],
+            "",
+            f"- だれ: {it['persona']['label']}",
+            f"- いつ / どこで: {pain['when']} / {pain['where']}",
+            f"- 何に困るか: {pain['what']}",
+            "",
+            "### 根拠に使っているオープンデータ",
+            od_lines,
+            "",
+            f"カードの全文: {card_page_url(it)}",
+            "",
+            "上の内容を見ながら、気づいたことを下の欄に書いてください。",
+        ]
+    )
+
+
+def render_card_issue_template(it):
+    intro = card_template_intro(it)
+    return (
+        "# Generated by build.py from data/issues.json. Do not edit by hand.\n"
+        f"name: {yq(card_label(it))}\n"
+        f"description: {yq(it['theme'] + 'の課題カードへの気づき')}\n"
+        f"title: {yq('[' + it['id'] + '] ')}\n"
+        'labels: ["question"]\n'
+        "body:\n"
+        "  - type: markdown\n"
+        "    attributes:\n"
+        "      value: |\n"
+        f"{yaml_block(intro, 8)}\n"
+        f"{issue_form_fields(card_value=card_label(it))}"
+    )
+
+
+def render_other_issue_template(issues):
+    options = [card_label(it) for it in issues] + ["特定しない（サイト全体・その他）"]
+    intro = (
+        "特定の課題カードに当てはまらないときや、カードをまだ決めていないときに使います。\n"
+        "カードが分かっている場合は、一覧からそのカードのひな型を選ぶか、"
+        f"サイト（{SITE_ORIGIN}）のカードページから起票してください。"
+    )
+    return (
+        "# Generated by build.py from data/issues.json. Do not edit by hand.\n"
+        f"name: {yq('サイト全体・その他')}\n"
+        f"description: {yq('カードを特定できないとき、サイト全体への気づき')}\n"
+        f"title: {yq('[その他] ')}\n"
+        'labels: ["question"]\n'
+        "body:\n"
+        "  - type: markdown\n"
+        "    attributes:\n"
+        "      value: |\n"
+        f"{yaml_block(intro, 8)}\n"
+        f"{issue_form_fields(card_options=options)}"
+    )
+
+
+def write_issue_templates(issues):
+    os.makedirs(ISSUE_TEMPLATE_DIR, exist_ok=True)
+    written = {ISSUE_TEMPLATE_OTHER}
+    other_path = os.path.join(ISSUE_TEMPLATE_DIR, ISSUE_TEMPLATE_OTHER)
+    with open(other_path, "w", encoding="utf-8") as fh:
+        fh.write(render_other_issue_template(issues))
+    for it in issues:
+        name = issue_template_filename(it)
+        written.add(name)
+        path = os.path.join(ISSUE_TEMPLATE_DIR, name)
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(render_card_issue_template(it))
+    for fn in os.listdir(ISSUE_TEMPLATE_DIR):
+        if not fn.endswith((".yml", ".yaml")):
+            continue
+        if fn in ("config.yml",) or fn in written:
+            continue
+        os.remove(os.path.join(ISSUE_TEMPLATE_DIR, fn))
+    return written
+
+
+def report_button(it, extra_class=""):
+    cls = "gh-issue" + (f" {extra_class}" if extra_class else "")
+    return (
+        f'<a class="{cls}" href="{esc(github_issue_url(it))}" '
+        f'target="_blank" rel="noopener noreferrer">'
+        f"このカードへの気づきを起票する</a>"
+    )
+
+
 def meter(value, maximum=5, label=""):
     dots = "".join(
         f'<span class="dot{" on" if i < value else ""}"></span>' for i in range(maximum)
@@ -313,6 +531,8 @@ def render_index(d):
     {esc(m['counts']['minutes_years'])}年の市議会会議録、まちづくり達成度アンケートの自由記述{m['counts']['survey_comments']:,}件を突き合わせて、
     想定される社会課題を10枚のカードに描きました。
     すべてのカードは<a href="template.html">同じスキーム</a>に沿っています。
+    読んで気づいたことは、各カードのページから GitHub Issue に起票できます。
+    GitHub の <a href="{esc(github_issue_chooser_url())}">New issue</a> からも、カードごとのひな型を選べます。
   </p>
   <div class="stats">{ctx}</div>
 </section>
@@ -407,6 +627,7 @@ def render_issue(it, prev_it, next_it):
     <span class="card-theme big">{esc(it['theme'])}</span>
     <h1>{esc(it['title'])}</h1>
     <p class="issue-catch">{esc(it['catch'])}</p>
+    <p class="issue-actions">{report_button(it)}</p>
   </header>
 
   <section class="block persona-block">
@@ -486,6 +707,12 @@ def render_issue(it, prev_it, next_it):
       <h4>足りないデータ（公開要望のたたき台）</h4>
       <ul class="missing">{missing}</ul>
     </div>
+  </section>
+
+  <section class="block report">
+    <h2>気づいたことがあれば</h2>
+    <p class="sub">事実の誤り、足りない視点、書きぶりの改善など。このカード用のひな型が開きます。GitHub アカウントが必要です。</p>
+    {report_button(it)}
   </section>
 
   <nav class="prevnext">{''.join(nav)}</nav>
@@ -762,6 +989,15 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
   font-family:var(--font-serif); color:var(--green-deep)}
 .issue-catch{margin:0; font-size:15.5px; color:var(--ink2); max-width:40em;
   border-left:3px solid var(--c); padding-left:14px}
+.issue-actions{margin:18px 0 0}
+.gh-issue{
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--green-deep); color:#f2f5ee; text-decoration:none;
+  font-size:14px; font-weight:700; padding:10px 16px; border-radius:8px;
+  line-height:1.4;
+}
+.gh-issue:hover{background:var(--green); color:#fff}
+.block.report .sub{margin-bottom:14px}
 .block{padding:38px 0; border-bottom:1px solid var(--line2)}
 .block:last-of-type{border-bottom:none}
 .block h2{display:flex; align-items:center; gap:10px; margin:0 0 18px; font-size:18px; font-weight:700}
@@ -908,6 +1144,7 @@ code{background:var(--code); border-radius:4px; padding:1px 5px; font-size:12.5p
   .feas-row>span:first-child{width:auto}
   .scene-wrap{margin-inline:-14px; padding:12px 14px; border-radius:0; border-left:none; border-right:none}
   .card-foot{align-items:flex-start}
+  .gh-issue{width:100%; box-sizing:border-box}
   .filter-count{margin-left:0}
 }
 """
@@ -995,7 +1232,11 @@ def main():
     shutil.copy(DATA, os.path.join(OUT, "issues.json"))
     shutil.copy(os.path.join(ROOT, "schema", "issue.schema.json"), os.path.join(OUT, "issue.schema.json"))
 
-    print("built %d issue pages + 3 pages -> docs/" % len(issues))
+    templates = write_issue_templates(issues)
+    print(
+        "built %d issue pages + 3 pages -> docs/; %d GitHub issue templates -> .github/ISSUE_TEMPLATE/"
+        % (len(issues), len(templates))
+    )
 
 
 if __name__ == "__main__":

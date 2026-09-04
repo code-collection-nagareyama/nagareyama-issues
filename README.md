@@ -53,7 +53,12 @@ docs/                     生成物。GitHub Pages の公開ディレクトリ
   sources.html            データ出典と、その扱い方
   issues/<slug>.html      各カードの詳細
   issues.json             カードデータを再利用できるよう配信
+.github/ISSUE_TEMPLATE/   GitHub Issue のひな型（カードへの気づき）
 ```
+
+## 気づきを起票する
+
+各カードの詳細ページから「このカードへの気づきを起票する」を開くと、対象カードが入った [Issue テンプレート](.github/ISSUE_TEMPLATE/card-feedback.yml) が立ち上がります。GitHub の Issue 画面から直接書く場合は、テンプレート「カードへの気づき」を選んでください。
 
 ## カードを追加する
 

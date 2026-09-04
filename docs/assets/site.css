@@ -120,6 +120,15 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
   font-family:var(--font-serif); color:var(--green-deep)}
 .issue-catch{margin:0; font-size:15.5px; color:var(--ink2); max-width:40em;
   border-left:3px solid var(--c); padding-left:14px}
+.issue-actions{margin:18px 0 0}
+.gh-issue{
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--green-deep); color:#f2f5ee; text-decoration:none;
+  font-size:14px; font-weight:700; padding:10px 16px; border-radius:8px;
+  line-height:1.4;
+}
+.gh-issue:hover{background:var(--green); color:#fff}
+.block.report .sub{margin-bottom:14px}
 .block{padding:38px 0; border-bottom:1px solid var(--line2)}
 .block:last-of-type{border-bottom:none}
 .block h2{display:flex; align-items:center; gap:10px; margin:0 0 18px; font-size:18px; font-weight:700}
@@ -266,5 +275,6 @@ code{background:var(--code); border-radius:4px; padding:1px 5px; font-size:12.5p
   .feas-row>span:first-child{width:auto}
   .scene-wrap{margin-inline:-14px; padding:12px 14px; border-radius:0; border-left:none; border-right:none}
   .card-foot{align-items:flex-start}
+  .gh-issue{width:100%; box-sizing:border-box}
   .filter-count{margin-left:0}
 }

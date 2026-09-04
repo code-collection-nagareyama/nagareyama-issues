@@ -11,6 +11,7 @@ import html
 import json
 import os
 import shutil
+from urllib.parse import quote, urlencode
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "data", "issues.json")
@@ -19,6 +20,8 @@ OUT = os.path.join(ROOT, "docs")
 SITE_TITLE = "Nagareyama Issues"
 SITE_BRAND = "Nagareyama Issues"
 SITE_TAGLINE = "データをもとに描きだした課題"
+GITHUB_REPO = "code-collection-nagareyama/nagareyama-issues"
+ISSUE_TEMPLATE = "card-feedback.yml"
 
 # テーマごとのアクセント色。カード・図・チップで共通に使う。
 THEME_COLOR = {
@@ -205,6 +208,33 @@ def scene_svg(panels, accent):
     return "".join(out)
 
 
+def card_label(it):
+    return f"{it['id']} {it['title']}"
+
+
+def github_issue_url(it):
+    """カード詳細から、対象カードが入った Issue テンプレートを開く。"""
+    params = urlencode(
+        {
+            "template": ISSUE_TEMPLATE,
+            "card": card_label(it),
+            "title": f"[{it['id']}] ",
+        },
+        quote_via=quote,
+        safe="",
+    )
+    return f"https://github.com/{GITHUB_REPO}/issues/new?{params}"
+
+
+def report_button(it, extra_class=""):
+    cls = "gh-issue" + (f" {extra_class}" if extra_class else "")
+    return (
+        f'<a class="{cls}" href="{esc(github_issue_url(it))}" '
+        f'target="_blank" rel="noopener noreferrer">'
+        f"このカードへの気づきを起票する</a>"
+    )
+
+
 def meter(value, maximum=5, label=""):
     dots = "".join(
         f'<span class="dot{" on" if i < value else ""}"></span>' for i in range(maximum)
@@ -313,6 +343,7 @@ def render_index(d):
     {esc(m['counts']['minutes_years'])}年の市議会会議録、まちづくり達成度アンケートの自由記述{m['counts']['survey_comments']:,}件を突き合わせて、
     想定される社会課題を10枚のカードに描きました。
     すべてのカードは<a href="template.html">同じスキーム</a>に沿っています。
+    読んで気づいたことは、各カードのページから GitHub Issue に起票できます。
   </p>
   <div class="stats">{ctx}</div>
 </section>
@@ -407,6 +438,7 @@ def render_issue(it, prev_it, next_it):
     <span class="card-theme big">{esc(it['theme'])}</span>
     <h1>{esc(it['title'])}</h1>
     <p class="issue-catch">{esc(it['catch'])}</p>
+    <p class="issue-actions">{report_button(it)}</p>
   </header>
 
   <section class="block persona-block">
@@ -486,6 +518,12 @@ def render_issue(it, prev_it, next_it):
       <h4>足りないデータ（公開要望のたたき台）</h4>
       <ul class="missing">{missing}</ul>
     </div>
+  </section>
+
+  <section class="block report">
+    <h2>気づいたことがあれば</h2>
+    <p class="sub">事実の誤り、足りない視点、書きぶりの改善など。GitHub の Issue テンプレートに沿って書き込めます。アカウントが必要です。</p>
+    {report_button(it)}
   </section>
 
   <nav class="prevnext">{''.join(nav)}</nav>
@@ -762,6 +800,15 @@ h1,h2,h3,h4{line-height:1.45; letter-spacing:.005em}
   font-family:var(--font-serif); color:var(--green-deep)}
 .issue-catch{margin:0; font-size:15.5px; color:var(--ink2); max-width:40em;
   border-left:3px solid var(--c); padding-left:14px}
+.issue-actions{margin:18px 0 0}
+.gh-issue{
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--green-deep); color:#f2f5ee; text-decoration:none;
+  font-size:14px; font-weight:700; padding:10px 16px; border-radius:8px;
+  line-height:1.4;
+}
+.gh-issue:hover{background:var(--green); color:#fff}
+.block.report .sub{margin-bottom:14px}
 .block{padding:38px 0; border-bottom:1px solid var(--line2)}
 .block:last-of-type{border-bottom:none}
 .block h2{display:flex; align-items:center; gap:10px; margin:0 0 18px; font-size:18px; font-weight:700}
@@ -908,6 +955,7 @@ code{background:var(--code); border-radius:4px; padding:1px 5px; font-size:12.5p
   .feas-row>span:first-child{width:auto}
   .scene-wrap{margin-inline:-14px; padding:12px 14px; border-radius:0; border-left:none; border-right:none}
   .card-foot{align-items:flex-start}
+  .gh-issue{width:100%; box-sizing:border-box}
   .filter-count{margin-left:0}
 }
 """
